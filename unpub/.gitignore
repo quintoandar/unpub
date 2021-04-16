@@ -11,3 +11,9 @@ build/
 doc/api/
 unpub-packages/
 .vscode/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/

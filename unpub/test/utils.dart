@@ -16,7 +16,8 @@ final email2 = 'email2@example.com';
 final email3 = 'email3@example.com';
 
 createServer(String opEmail) async {
-  var mongoStore = unpub.MongoStore('mongodb://localhost:27017/dart_pub_test');
+  var mongoStore = unpub.MongoStore();
+  await mongoStore.create('mongodb://localhost:27017/dart_pub_test');
   await mongoStore.db.open();
 
   var app = unpub.App(

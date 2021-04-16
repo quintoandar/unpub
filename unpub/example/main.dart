@@ -4,7 +4,8 @@ main(List<String> args) async {
   var basedir = '/path/to/basedir'; // Base directory to save pacakges
   var db = 'mongodb://localhost:27017/dart_pub'; // MongoDB uri
 
-  var metaStore = unpub.MongoStore(db);
+  var metaStore = unpub.MongoStore();
+  await metaStore.create(db);
   await metaStore.db.open();
 
   var packageStore = unpub.FileStore(basedir);

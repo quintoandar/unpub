@@ -9,10 +9,11 @@ final statsCollection = 'stats';
 class MongoStore extends MetaStore {
   Db db;
 
-  MongoStore(String uri) : db = Db(uri);
   MongoStore.pool(List<String> uris) : db = Db.pool(uris);
 
   SelectorBuilder _selectByName(String name) => where.eq('name', name);
+
+  MongoStore();
 
   @override
   Future<UnpubPackage> queryPackage(String name) async {
@@ -20,6 +21,10 @@ class MongoStore extends MetaStore {
         await db.collection(packageCollection).findOne(_selectByName(name));
     if (json == null) return null;
     return UnpubPackage.fromJson(json);
+  }
+
+  Future<void> create(String uri) async {
+    db = await Db.create(uri);
   }
 
   @override

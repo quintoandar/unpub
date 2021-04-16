@@ -24,7 +24,8 @@ main(List<String> args) async {
 
   var baseDir = path.absolute('unpub-packages');
 
-  var mongoStore = unpub.MongoStore(db);
+  var mongoStore = unpub.MongoStore();
+  await mongoStore.create(db);
   await mongoStore.db.open();
 
   var app = unpub.App(

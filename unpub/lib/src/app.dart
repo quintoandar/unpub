@@ -93,7 +93,7 @@ class App {
         .addHandler((req) async {
       // Return 404 by default
       // https://github.com/google/dart-neats/issues/1
-      var res = await router.handler(req);
+      var res = await router.call(req);
       if (res == null) {
         return shelf.Response.notFound('Not found');
       } else {

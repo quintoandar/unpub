@@ -14,7 +14,7 @@ Unpub is a self-hosted private Dart Pub server for Enterprise, with a simple web
 1. In the terminal, navigate to your package
 `cd my_package`
 2. Then run this command to publish to unpub
-`flutter pub publish --server {https://myserver.unpub.com}`
+`flutter pub publish --server https://myserver.unpub.com`
 
 ## How to receive a package from unpub
 

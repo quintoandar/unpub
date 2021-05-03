@@ -1,6 +1,7 @@
 import 'dart:io';
-import 'package:path/path.dart' as path;
+
 import 'package:args/args.dart';
+import 'package:path/path.dart' as path;
 import 'package:unpub/unpub.dart' as unpub;
 
 main(List<String> args) async {
@@ -31,6 +32,7 @@ main(List<String> args) async {
   var app = unpub.App(
     metaStore: mongoStore,
     packageStore: unpub.FileStore(baseDir),
+    overrideUploaderEmail: 'micael.santos@quintoandar.com.br', // Temporary
   );
 
   var server = await app.serve(host, port);

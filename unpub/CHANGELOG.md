@@ -1,3 +1,8 @@
+## 2.0.0
+
+- Supports NNBD
+- Fixes Web styles
+
 ## 1.2.1
 
 ## 1.2.0

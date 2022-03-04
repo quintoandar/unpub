@@ -1,7 +1,7 @@
 import 'package:unpub/src/models.dart';
 
 abstract class MetaStore {
-  Future<UnpubPackage> queryPackage(String name);
+  Future<UnpubPackage?> queryPackage(String name);
 
   Future<void> addVersion(String name, UnpubVersion version);
 
@@ -11,7 +11,12 @@ abstract class MetaStore {
 
   void increaseDownloads(String name, String version);
 
-  Future<int> queryCount(String q);
-
-  Stream<UnpubPackage> queryPackages(int size, int page, String sort, String q);
+  Future<UnpubQueryResult> queryPackages({
+    required int size,
+    required int page,
+    required String sort,
+    String? keyword,
+    String? uploader,
+    String? dependency,
+  });
 }

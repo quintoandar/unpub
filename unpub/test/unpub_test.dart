@@ -5,14 +5,13 @@ import 'package:unpub/src/utils.dart';
 import 'package:test/test.dart';
 import 'package:path/path.dart' as path;
 import 'package:http/http.dart' as http;
-import 'package:http/io_client.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'utils.dart';
 import 'package:unpub/unpub.dart';
 
 main() {
   Db _db = Db('mongodb://localhost:27017/dart_pub_test');
-  HttpServer _server;
+  late HttpServer _server;
 
   setUpAll(() async {
     await _db.open();
@@ -21,13 +20,13 @@ main() {
   Future<Map<String, dynamic>> _readMeta(String name) async {
     var res =
         await _db.collection(packageCollection).findOne(where.eq('name', name));
-    res.remove('_id');
+    res!.remove('_id'); // TODO: null
     return res;
   }
 
   Map<String, String> _pubspecCache = {};
 
-  Future<String> _readFile(
+  Future<String?> _readFile(
       String package, String version, String filename) async {
     var key = package + version + filename;
     if (_pubspecCache[key] == null) {

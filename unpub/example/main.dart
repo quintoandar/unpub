@@ -1,20 +1,15 @@
+import 'package:mongo_dart/mongo_dart.dart';
 import 'package:unpub/unpub.dart' as unpub;
 
 main(List<String> args) async {
-  var basedir = '/path/to/basedir'; // Base directory to save pacakges
-  var db = 'mongodb://localhost:27017/dart_pub'; // MongoDB uri
+  final db = Db('mongodb://localhost:27017/dart_pub');
+  await db.open(); // make sure the MongoDB connection opened
 
-  var metaStore = unpub.MongoStore();
-  await metaStore.create(db);
-  await metaStore.db.open();
-
-  var packageStore = unpub.FileStore(basedir);
-
-  var app = unpub.App(
-    metaStore: metaStore,
-    packageStore: packageStore,
+  final app = unpub.App(
+    metaStore: unpub.MongoStore(db),
+    packageStore: unpub.FileStore('./unpub-packages'),
   );
 
-  var server = await app.serve('0.0.0.0', 4000);
+  final server = await app.serve('0.0.0.0', 4000);
   print('Serving at http://${server.address.host}:${server.port}');
 }

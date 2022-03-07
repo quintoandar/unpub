@@ -16,7 +16,7 @@ class ListApi {
 @JsonSerializable()
 class ListApiPackage {
   String name;
-  String description;
+  String? description;
   List<String> tags;
   String latest;
   DateTime updatedAt;
@@ -50,11 +50,11 @@ class WebapiDetailView {
   String homepage;
   List<String> uploaders;
   DateTime createdAt;
-  final String readme;
-  final String changelog;
+  final String? readme;
+  final String? changelog;
   List<DetailViewVersion> versions;
-  List<String> authors;
-  List<String> dependencies;
+  List<String?> authors;
+  List<String>? dependencies;
   List<String> tags;
 
   WebapiDetailView(

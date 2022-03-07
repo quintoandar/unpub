@@ -72,7 +72,7 @@ class DetailComponent implements OnInit, OnActivate {
             .setInnerHtml(readmeHtml, validator: _htmlValidator);
         querySelector('#changelog')
             .setInnerHtml(changelogHtml, validator: _htmlValidator);
-      } on PackageNotExistsException catch (e) {
+      } on PackageNotExistsException {
         packageNotExists = true;
       } finally {
         appService.setLoading(false);
@@ -80,8 +80,8 @@ class DetailComponent implements OnInit, OnActivate {
     }
   }
 
-  getListUrl(String name) {
-    return RoutePaths.list.toUrl(parameters: {'name': name});
+  getListUrl(String q) {
+    return RoutePaths.list.toUrl(queryParameters: {'q': q});
   }
 
   getDetailUrl(String name, [String version]) {

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:path/path.dart' as path;
+import 'package:mongo_dart/mongo_dart.dart';
 import 'package:unpub/unpub.dart' as unpub;
 
 void main(List<String> args) async {
@@ -17,9 +18,9 @@ void main(List<String> args) async {
 
   var results = parser.parse(args);
 
-  var host = results['host'] as String;
+  var host = results['host'] as String?;
   var port = int.parse(results['port'] as String);
-  var db = results['database'] as String;
+  var dbUri = results['database'] as String;
   var uploader = results['uploader'] as String;
 
   if (results.rest.isNotEmpty) {
@@ -28,14 +29,13 @@ void main(List<String> args) async {
     exit(1);
   }
 
+  final db = Db(dbUri);
+  await db.open();
+
   var baseDir = path.absolute('unpub-packages');
 
-  var mongoStore = unpub.MongoStore();
-  await mongoStore.create(db);
-  await mongoStore.db.open();
-
   var app = unpub.App(
-    metaStore: mongoStore,
+    metaStore: unpub.MongoStore(db),
     packageStore: unpub.FileStore(baseDir),
     overrideUploaderEmail: uploader,
   );

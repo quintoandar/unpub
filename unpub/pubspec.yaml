@@ -1,38 +1,33 @@
 name: unpub
 description: Self-hosted private Dart Pub server for Enterprise, with a simple web interface to search and view packages information.
-version: 1.2.1
+version: 2.0.0
 homepage: https://github.com/bytedance/unpub
-author: Rongjian Zhang <pd4d10@gmail.com>
-
 environment:
-  sdk: ">=2.3.0 <3.0.0"
-
-dependencies:
-  args: ^1.5.1
-  shelf: 1.1.0
-  shelf_router: ^1.0.0
-  http_parser: ^4.0.0
-  http: 0.13.1
-  archive: ^3.1.2
-  logging: ^1.0.0
-  meta: ^1.1.7
-  googleapis: ^1.0.0
-  yaml: ^3.1.0
-  pub_semver: ^2.0.0
-  json_annotation: ^4.0.0
-  mongo_dart: 0.7.0
-  mime: ^0.9.6+3
-  intl: ^0.16.0
-  path: ^1.6.2
-
-dev_dependencies:
-  pedantic: ^1.0.0
-  test: ^1.6.1
-  build_runner: ^1.0.0
-  json_serializable: 4.1.0
-  collection: ^1.14.11
-  dart_style: 2.0.0
-
-
+  sdk: ">=2.12.0 <3.0.0"
 executables:
   unpub: unpub
+dependencies:
+  args: ^2.2.0
+  shelf: ^1.2.0
+  shelf_router: ^1.1.1
+  http_parser: ^4.0.0
+  http: ^0.13.3
+  archive: ^3.1.2
+  logging: ^1.0.1
+  meta: ^1.1.7
+  googleapis: ^4.0.0
+  yaml: ^3.1.0
+  pub_semver: ^2.0.0
+  json_annotation: ^4.1.0
+  mongo_dart: ^0.7.1
+  mime: ^1.0.0
+  intl: ^0.17.0
+  path: ^1.6.2
+  collection: ^1.15.0
+  shelf_cors_headers: ^0.1.2
+dev_dependencies:
+  test: ^1.6.1
+  build_runner: ^2.1.1
+  json_serializable: ^5.0.0
+  shelf_router_generator: ^1.0.1
+  chunked_stream: ^1.4.1

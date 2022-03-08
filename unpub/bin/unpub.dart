@@ -21,7 +21,7 @@ void main(List<String> args) async {
   var host = results['host'] as String?;
   var port = int.parse(results['port'] as String);
   var dbUri = results['database'] as String;
-  var uploader = results['uploader'] as String;
+  var uploader = results['uploader'] as String?;
 
   if (results.rest.isNotEmpty) {
     print('Got unexpected arguments: "${results.rest.join(' ')}".\n\nUsage:\n');
@@ -37,7 +37,7 @@ void main(List<String> args) async {
   var app = unpub.App(
     metaStore: unpub.MongoStore(db),
     packageStore: unpub.FileStore(baseDir),
-    overrideUploaderEmail: uploader,
+    overrideUploaderEmail: uploader ?? '',
   );
 
   var server = await app.serve(host, port);

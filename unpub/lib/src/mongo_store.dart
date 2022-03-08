@@ -24,8 +24,6 @@ class MongoStore extends MetaStore {
     return UnpubQueryResult(count, packages);
   }
 
-  MongoStore();
-
   @override
   queryPackage(name) async {
     var json =

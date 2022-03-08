@@ -19,11 +19,9 @@ final email3 = 'email3@example.com';
 createServer(String opEmail) async {
   final dbUri = 'mongodb://localhost:27017/dart_pub_test';
 
-  final db = Db(dbUri);
-  await db.open();
-
-  var mongoStore = unpub.MongoStore(db);
-  mongoStore.create(dbUri);
+  var mongoStore = unpub.MongoStore();
+  await mongoStore.create(dbUri);
+  await mongoStore.db.open();
 
   var app = unpub.App(
     metaStore: mongoStore,

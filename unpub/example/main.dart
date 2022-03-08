@@ -4,14 +4,12 @@ import 'package:unpub/unpub.dart' as unpub;
 main(List<String> args) async {
   const dbUri = 'mongodb://localhost:27017/dart_pub';
 
-  final db = Db(dbUri);
-  await db.open(); // make sure the MongoDB connection opened
-
-  var metaStore = unpub.MongoStore(db);
+  var metaStore = unpub.MongoStore();
   await metaStore.create(dbUri);
+  await metaStore.db.open();
 
   final app = unpub.App(
-    metaStore: unpub.MongoStore(db),
+    metaStore: metaStore,
     packageStore: unpub.FileStore('./unpub-packages'),
   );
 

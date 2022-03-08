@@ -7,9 +7,9 @@ final packageCollection = 'packages';
 final statsCollection = 'stats';
 
 class MongoStore extends MetaStore {
-  Db db;
+  late Db db;
 
-  MongoStore(this.db);
+  MongoStore();
 
   static SelectorBuilder _selectByName(String? name) => where.eq('name', name);
 

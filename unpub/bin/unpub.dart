@@ -29,14 +29,13 @@ void main(List<String> args) async {
     exit(1);
   }
 
-  var mongoStore = unpub.MongoStore();
-  await mongoStore.create(dbUri);
-  await mongoStore.db.open();
+  final db = Db(dbUri);
+  await db.open();
 
   var baseDir = path.absolute('unpub-packages');
 
   var app = unpub.App(
-    metaStore: mongoStore,
+    metaStore: unpub.MongoStore(db),
     packageStore: unpub.FileStore(baseDir),
     overrideUploaderEmail: uploader ?? '',
   );

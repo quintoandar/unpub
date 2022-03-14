@@ -3,9 +3,11 @@ import 'package:unpub/unpub.dart' as unpub;
 
 main(List<String> args) async {
   const dbUri = 'mongodb://localhost:27017/dart_pub';
+  const authenticationMechanism = 'SCRAM-SHA-1';
 
   var metaStore = unpub.MongoStore();
   await metaStore.create(dbUri);
+  metaStore.db.selectAuthenticationMechanism(authenticationMechanism);
   await metaStore.db.open();
 
   final app = unpub.App(

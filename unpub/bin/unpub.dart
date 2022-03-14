@@ -22,6 +22,7 @@ void main(List<String> args) async {
   var port = int.parse(results['port'] as String);
   var dbUri = results['database'] as String;
   var uploader = results['uploader'] as String?;
+  var authMechanism = results['auth_mechanism'] as String?;
 
   if (results.rest.isNotEmpty) {
     print('Got unexpected arguments: "${results.rest.join(' ')}".\n\nUsage:\n');
@@ -31,6 +32,7 @@ void main(List<String> args) async {
 
   var mongoStore = unpub.MongoStore();
   await mongoStore.create(dbUri);
+  mongoStore.db.selectAuthenticationMechanism(authMechanism ?? 'SCRAM-SHA-256');
   await mongoStore.db.open();
 
   var baseDir = path.absolute('unpub-packages');

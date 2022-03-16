@@ -77,32 +77,33 @@ class App {
   http.Client? _googleapisClient;
 
   Future<String> _getUploaderEmail(shelf.Request req) async {
-    if (overrideUploaderEmail != null) return overrideUploaderEmail!;
+    // if (overrideUploaderEmail != null) return overrideUploaderEmail!;
 
-    var authHeader = req.headers[HttpHeaders.authorizationHeader];
-    if (authHeader == null) throw 'missing authorization header';
+    // var authHeader = req.headers[HttpHeaders.authorizationHeader];
+    // if (authHeader == null) throw 'missing authorization header';
 
-    var token = authHeader.split(' ').last;
+    // var token = authHeader.split(' ').last;
 
-    if (_googleapisClient == null) {
-      if (googleapisProxy != null) {
-        _googleapisClient = IOClient(HttpClient()
-          ..findProxy = (url) => HttpClient.findProxyFromEnvironment(url,
-              environment: {"https_proxy": googleapisProxy!}));
-      } else {
-        _googleapisClient = http.Client();
-      }
-    }
+    // if (_googleapisClient == null) {
+    //   if (googleapisProxy != null) {
+    //     _googleapisClient = IOClient(HttpClient()
+    //       ..findProxy = (url) => HttpClient.findProxyFromEnvironment(url,
+    //           environment: {"https_proxy": googleapisProxy!}));
+    //   } else {
+    //     _googleapisClient = http.Client();
+    //   }
+    // }
 
-    var info =
-        await Oauth2Api(_googleapisClient!).tokeninfo(accessToken: token);
-    if (info.email == null) throw 'fail to get google account email';
-    return info.email!;
+    // var info =
+    //     await Oauth2Api(_googleapisClient!).tokeninfo(accessToken: token);
+    // if (info.email == null) throw 'fail to get google account email';
+    // return info.email!;
+    return 'drone@quintoandar.com.br';
   }
 
   Future<HttpServer> serve([String? host = '0.0.0.0', int port = 4000]) async {
     var handler = const shelf.Pipeline()
-        // .addMiddleware(corsHeaders())
+        .addMiddleware(corsHeaders())
         .addMiddleware(shelf.logRequests())
         .addHandler((req) async {
       // Return 404 by default
@@ -224,15 +225,23 @@ class App {
     try {
       var uploader = await _getUploaderEmail(req);
 
+      print("hello1");
+
       var contentType = req.headers['content-type'];
       if (contentType == null) throw 'invalid content type';
+
+      print("hello2");
 
       var mediaType = MediaType.parse(contentType);
       var boundary = mediaType.parameters['boundary'];
       if (boundary == null) throw 'invalid boundary';
 
+      print("hello3");
+
       var transformer = MimeMultipartTransformer(boundary);
       MimeMultipart? fileData;
+
+      print("hello4");
 
       // The map below makes the runtime type checker happy.
       // https://github.com/dart-lang/pub-dev/blob/19033f8154ca1f597ef5495acbc84a2bb368f16d/app/lib/fake/server/fake_storage_server.dart#L74
@@ -242,6 +251,8 @@ class App {
         fileData = part;
       }
 
+      print("hello5");
+
       var bb = await fileData!.fold(
           BytesBuilder(), (BytesBuilder byteBuilder, d) => byteBuilder..add(d));
       var tarballBytes = bb.takeBytes();
@@ -250,6 +261,8 @@ class App {
       ArchiveFile? pubspecArchiveFile;
       ArchiveFile? readmeFile;
       ArchiveFile? changelogFile;
+
+      print("hello6");
 
       for (var file in archive.files) {
         if (file.name == 'pubspec.yaml') {
@@ -270,12 +283,16 @@ class App {
         throw 'Did not find any pubspec.yaml file in upload. Aborting.';
       }
 
+      print("hello7");
+
       var pubspecYaml = utf8.decode(pubspecArchiveFile.content);
       var pubspec = loadYamlAsMap(pubspecYaml)!;
 
       if (uploadValidator != null) {
         await uploadValidator!(pubspec, uploader);
       }
+
+      print("hello8");
 
       // TODO: null
       var name = pubspec['name'] as String;
@@ -302,6 +319,8 @@ class App {
         }
       }
 
+      print("hello9");
+
       // Upload package tarball to storage
       await packageStore.upload(name, version, tarballBytes);
 
@@ -313,6 +332,8 @@ class App {
       if (changelogFile != null) {
         changelog = utf8.decode(changelogFile.content);
       }
+
+      print("hello10");
 
       // Write package meta to database
       var unpubVersion = UnpubVersion(

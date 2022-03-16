@@ -102,7 +102,7 @@ class App {
 
   Future<HttpServer> serve([String? host = '0.0.0.0', int port = 4000]) async {
     var handler = const shelf.Pipeline()
-        .addMiddleware(corsHeaders())
+        // .addMiddleware(corsHeaders())
         .addMiddleware(shelf.logRequests())
         .addHandler((req) async {
       // Return 404 by default

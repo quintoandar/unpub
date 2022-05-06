@@ -4,7 +4,7 @@ import 'package:args/args.dart';
 import 'package:path/path.dart' as path;
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:unpub/unpub.dart' as unpub;
-import '../../unpub_aws/lib/unpub_aws.dart' as unpub_aws;
+import 'package:unpub_aws/unpub_aws.dart' as unpub_aws;
 
 void main(List<String> args) async {
   var parser = ArgParser();

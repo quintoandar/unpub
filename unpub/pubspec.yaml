@@ -6,6 +6,7 @@ environment:
   sdk: ">=2.12.0 <3.0.0"
 executables:
   unpub: unpub
+dependencies:
   args: ^2.2.0
   shelf: ^1.2.0
   shelf_router: ^1.1.1
@@ -24,8 +25,8 @@ executables:
   path: ^1.6.2
   collection: ^1.15.0
   shelf_cors_headers: ^0.1.2
-  unpub_aws: 0.1.0
-
+  unpub_aws:
+    path: ../unpub_aws/
 dev_dependencies:
   test: ^1.6.1
   build_runner: ^2.1.1

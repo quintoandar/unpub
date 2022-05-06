@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:path/path.dart' as path;
 import 'package:unpub/unpub.dart' as unpub;
-import 'package:unpub_aws/unpub_aws.dar' as unpub_aws;
+import 'package:unpub_aws/unpub_aws.dart' as unpub_aws;
 
 void main(List<String> args) async {
   var parser = ArgParser();

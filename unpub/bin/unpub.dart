@@ -42,7 +42,7 @@ void main(List<String> args) async {
   var app = unpub.App(
     metaStore: mongoStore,
     packageStore: unpub_aws.S3Store(bucket),
-    overrideUploaderEmail: uploader ?? '',
+    overrideUploaderEmail: uploader,
   );
 
   var server = await app.serve(host, port);

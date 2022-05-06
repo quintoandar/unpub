@@ -6,7 +6,6 @@ environment:
   sdk: ">=2.3.0 <3.0.0"
 executables:
   unpub: unpub
-dependencies:
   args: ^2.2.0
   shelf: ^1.2.0
   shelf_router: ^1.1.1
@@ -33,6 +32,3 @@ dev_dependencies:
   json_serializable: ^5.0.0
   shelf_router_generator: ^1.0.1
   chunked_stream: ^1.4.1
-  pedantic: ^1.0.0
-  collection: ^1.14.11
-  dart_style: 2.0.0

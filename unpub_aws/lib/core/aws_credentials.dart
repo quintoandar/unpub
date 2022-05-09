@@ -23,11 +23,8 @@ class AwsCredentials {
     awsAccessKeyId = awsAccessKeyId ?? env['AWS_ACCESS_KEY_ID'];
     awsSecretAccessKey = awsSecretAccessKey ?? env['AWS_SECRET_ACCESS_KEY'];
 
-    var isInContainer = env['AWS_CONTAINER_CREDENTIALS_RELATIVE_URI'];
-
-    if ((isInContainer != null || containerCredentials != null) &&
-        (awsAccessKeyId == null && awsSecretAccessKey == null)) {
-      var data = containerCredentials ?? waitFor(getNodeCredentials());
+    if (awsAccessKeyId == null && awsSecretAccessKey == null) {
+      var data = waitFor(getNodeCredentials());
       if (data != null) {
         awsAccessKeyId = data['AccessKeyId'];
         awsSecretAccessKey = data['SecretAccessKey'];

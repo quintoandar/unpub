@@ -47,6 +47,7 @@ class AwsCredentials {
       var relativeUri =
           environment['AWS_CONTAINER_CREDENTIALS_RELATIVE_URI'] ?? '';
       var url = Uri.parse('http://169.254.170.2$relativeUri');
+      print(url);
       var response = await http.read(url);
       print(response);
       return json.decode(response);

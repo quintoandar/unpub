@@ -27,7 +27,7 @@ class AwsCredentials {
 
     if ((isInContainer != null || containerCredentials != null) &&
         (awsAccessKeyId == null && awsSecretAccessKey == null)) {
-      var data = containerCredentials ?? waitFor(getContainerCredentials(env));
+      var data = containerCredentials ?? waitFor(getNodeCredentials());
       if (data != null) {
         awsAccessKeyId = data['AccessKeyId'];
         awsSecretAccessKey = data['SecretAccessKey'];
@@ -54,6 +54,21 @@ class AwsCredentials {
     } catch (e) {
       print(e);
       print('failed to get container credentials.');
+    }
+  }
+
+  Future<Map<String, String>?> getNodeCredentials() async {
+    try {
+      var relativeUri = '/latest/meta-data/iam/security-credentials/';
+      var url = Uri.parse('http://169.254.169.254$relativeUri');
+      var node = await http.read(url);
+      print(node);
+      url = Uri.parse('$url$node');
+      var credentials = await http.read(url);
+      return json.decode(response);
+    } catch (e) {
+      print(e);
+      print('failed to get node credentials.');
     }
   }
 }

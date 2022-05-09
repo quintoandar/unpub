@@ -48,8 +48,10 @@ class AwsCredentials {
           environment['AWS_CONTAINER_CREDENTIALS_RELATIVE_URI'] ?? '';
       var url = Uri.parse('http://169.254.170.2$relativeUri');
       var response = await http.read(url);
+      print(response)
       return json.decode(response);
     } catch (e) {
+      print(e.message);
       print('failed to get container credentials.');
     }
   }

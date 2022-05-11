@@ -1,7 +1,6 @@
 # Unpub
 
 [![pub](https://img.shields.io/pub/v/unpub.svg)](https://pub.dev/packages/unpub)
-[![test](https://github.com/bytedance/unpub/workflows/test/badge.svg)](https://github.com/bytedance/unpub/actions?query=workflow:test)
 
 Unpub is a self-hosted private Dart Pub server for Enterprise, with a simple web interface to search and view packages information.
 
@@ -9,7 +8,9 @@ Unpub is a self-hosted private Dart Pub server for Enterprise, with a simple web
 
 ![Screenshot](https://raw.githubusercontent.com/bytedance/unpub/master/assets/screenshot.png)
 
-## Usage via command line
+## Usage
+
+### Command Line
 
 ```sh
 pub global activate unpub
@@ -20,42 +21,35 @@ Unpub use mongodb as meta information store and file system as package(tarball) 
 
 Dart API is also available for further customization.
 
-## Usage via Dart API
-
-### Example
+### Dart API
 
 ```dart
+import 'package:mongo_dart/mongo_dart.dart';
 import 'package:unpub/unpub.dart' as unpub;
 
 main(List<String> args) async {
-  var basedir = '/path/to/basedir'; // Base directory to save pacakges
-  var db = 'mongodb://localhost:27017/dart_pub'; // MongoDB uri
+  final db = Db('mongodb://localhost:27017/dart_pub');
+  await db.open(); // make sure the MongoDB connection opened
 
-  var metaStore = unpub.MongoStore(db);
-  await metaStore.db.open();
-
-  var packageStore = unpub.FileStore(basedir);
-
-  var app = unpub.App(
-    metaStore: metaStore,
-    packageStore: packageStore,
+  final app = unpub.App(
+    metaStore: unpub.MongoStore(db),
+    packageStore: unpub.FileStore('./unpub-packages'),
   );
 
-  var server = await app.serve('0.0.0.0', 4000);
+  final server = await app.serve('0.0.0.0', 4000);
   print('Serving at http://${server.address.host}:${server.port}');
 }
 ```
 
 ### Options
 
-| Option                    | Description                                                                          | Default         |
-| ------------------------- | ------------------------------------------------------------------------------------ | --------------- |
-| `metaStore` (Required)    | Meta information store                                                               | -               |
-| `packageStore` (Required) | Package(tarball) store                                                               | -               |
-| `upstream`                | Upstream url                                                                         | https://pub.dev |
-| `googleapisProxy`         | Http(s) proxy to call googleapis (to get uploader email)                             | -               |
-| `overrideUploaderEmail`   | If specified, unpub will use this email as uploader instead of requesting googleapis | -               |
-| `uploadValidator`         | See [Package validator](#package-validator)                                          | -               |
+| Option | Description | Default |
+| --- | --- | --- |
+| `metaStore` (Required) | Meta information store | - |
+| `packageStore` (Required) | Package(tarball) store | - |
+| `upstream` | Upstream url | https://pub.dev |
+| `googleapisProxy` | Http(s) proxy to call googleapis (to get uploader email) | - |
+| `uploadValidator` | See [Package validator](#package-validator) | - |
 
 ### Package validator
 
@@ -103,15 +97,19 @@ class MyAwesomePackageStore extends unpub.PackageStore {
 var app = unpub.App(
   metaStore: MyAwesomeMetaStore(),
   packageStore: MyAwesomePackageStore(),
-)
+);
 ```
+
+#### Available Package Stores
+
+1. [unpub_aws](https://github.com/bytedance/unpub/tree/master/unpub_aws): AWS S3 package store, maintained by [@CleanCode](https://github.com/Clean-Cole).
 
 ## Badges
 
-| URL                                          | Badge                                                                                     |
-| -------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| URL | Badge |
+| --- | --- |
 | `/badge/v/{package_name}` | ![badge example](https://img.shields.io/static/v1?label=unpub&message=0.1.0&color=orange) ![badge example](https://img.shields.io/static/v1?label=unpub&message=1.0.0&color=blue) |
-| `/badge/d/{package_name}`                    | ![badge example](https://img.shields.io/static/v1?label=downloads&message=123&color=blue) |
+| `/badge/d/{package_name}` | ![badge example](https://img.shields.io/static/v1?label=downloads&message=123&color=blue) |
 
 ## Alternatives
 

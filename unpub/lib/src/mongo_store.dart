@@ -7,16 +7,25 @@ final packageCollection = 'packages';
 final statsCollection = 'stats';
 
 class MongoStore extends MetaStore {
-  Db db;
-
-  MongoStore.pool(List<String> uris) : db = Db.pool(uris);
-
-  SelectorBuilder _selectByName(String name) => where.eq('name', name);
+  late Db db;
 
   MongoStore();
 
+  static SelectorBuilder _selectByName(String? name) => where.eq('name', name);
+
+  Future<UnpubQueryResult> _queryPackagesBySelector(
+      SelectorBuilder selector) async {
+    final count = await db.collection(packageCollection).count(selector);
+    final packages = await db
+        .collection(packageCollection)
+        .find(selector)
+        .map((item) => UnpubPackage.fromJson(item))
+        .toList();
+    return UnpubQueryResult(count, packages);
+  }
+
   @override
-  Future<UnpubPackage> queryPackage(String name) async {
+  queryPackage(name) async {
     var json =
         await db.collection(packageCollection).findOne(_selectByName(name));
     if (json == null) return null;
@@ -28,7 +37,7 @@ class MongoStore extends MetaStore {
   }
 
   @override
-  Future<void> addVersion(String name, UnpubVersion version) async {
+  addVersion(name, version) async {
     await db.collection(packageCollection).update(
         _selectByName(name),
         modify
@@ -42,21 +51,21 @@ class MongoStore extends MetaStore {
   }
 
   @override
-  Future<void> addUploader(String name, String email) async {
+  addUploader(name, email) async {
     await db
         .collection(packageCollection)
         .update(_selectByName(name), modify.push('uploaders', email));
   }
 
   @override
-  Future<void> removeUploader(String name, String email) async {
+  removeUploader(name, email) async {
     await db
         .collection(packageCollection)
         .update(_selectByName(name), modify.pull('uploaders', email));
   }
 
   @override
-  void increaseDownloads(String name, String version) {
+  increaseDownloads(name, version) {
     var today = DateFormat('yyyyMMdd').format(DateTime.now());
     db
         .collection(packageCollection)
@@ -66,47 +75,34 @@ class MongoStore extends MetaStore {
         .update(_selectByName(name), modify.inc('d$today', 1));
   }
 
-  static final _keywordPrefixes = {
-    'email:': (String email) => where.eq('uploaders', email),
-    'package:': (String package) => where.match('name', '^$package.*'),
-    'dependency:': (String dependency) => where.raw({
-          // FIXME: raw
-          'versions': {
-            '\$elemMatch': {
-              'pubspec.dependencies.$dependency': {'\$exists': true}
-            }
+  @override
+  Future<UnpubQueryResult> queryPackages({
+    required size,
+    required page,
+    required sort,
+    keyword,
+    uploader,
+    dependency,
+  }) {
+    var selector =
+        where.sortBy(sort, descending: true).limit(size).skip(page * size);
+
+    if (keyword != null) {
+      selector = selector.match('name', '.*$keyword.*');
+    }
+    if (uploader != null) {
+      selector = selector.eq('uploaders', uploader);
+    }
+    if (dependency != null) {
+      selector = selector.raw({
+        'versions': {
+          r'$elemMatch': {
+            'pubspec.dependencies.$dependency': {r'$exists': true}
           }
-        }),
-  };
-
-  SelectorBuilder _buildSearchSelector(String q) {
-    if (q == null || q == '') return where;
-
-    for (var entry in _keywordPrefixes.entries) {
-      if (q.startsWith(entry.key)) {
-        return entry.value(q.substring(entry.key.length).trim());
-      }
+        }
+      });
     }
 
-    return where.match('name', '.*$q.*');
-  }
-
-  @override
-  Future<int> queryCount(String q) {
-    return db.collection(packageCollection).count(_buildSearchSelector(q));
-  }
-
-  @override
-  Stream<UnpubPackage> queryPackages(
-      int size, int page, String sort, String q) {
-    var selector = _buildSearchSelector(q)
-        .sortBy(sort, descending: true)
-        .limit(size)
-        .skip(page * size);
-
-    return db
-        .collection(packageCollection)
-        .find(selector)
-        .map((item) => UnpubPackage.fromJson(item));
+    return _queryPackagesBySelector(selector);
   }
 }

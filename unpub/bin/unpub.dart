@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:path/path.dart' as path;
+import 'package:mongo_dart/mongo_dart.dart';
 import 'package:unpub/unpub.dart' as unpub;
 
 void main(List<String> args) async {
@@ -17,10 +18,10 @@ void main(List<String> args) async {
 
   var results = parser.parse(args);
 
-  var host = results['host'] as String;
+  var host = results['host'] as String?;
   var port = int.parse(results['port'] as String);
-  var db = results['database'] as String;
-  var uploader = results['uploader'] as String;
+  var dbUri = results['database'] as String;
+  var uploader = results['uploader'] as String?;
 
   if (results.rest.isNotEmpty) {
     print('Got unexpected arguments: "${results.rest.join(' ')}".\n\nUsage:\n');
@@ -28,16 +29,17 @@ void main(List<String> args) async {
     exit(1);
   }
 
-  var baseDir = path.absolute('unpub-packages');
-
   var mongoStore = unpub.MongoStore();
-  await mongoStore.create(db);
+  await mongoStore.create(dbUri);
+  mongoStore.db.selectAuthenticationMechanism('SCRAM-SHA-1');
   await mongoStore.db.open();
+
+  var baseDir = path.absolute('unpub-packages');
 
   var app = unpub.App(
     metaStore: mongoStore,
     packageStore: unpub.FileStore(baseDir),
-    overrideUploaderEmail: uploader,
+    overrideUploaderEmail: uploader ?? '',
   );
 
   var server = await app.serve(host, port);

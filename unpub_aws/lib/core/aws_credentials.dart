@@ -61,8 +61,10 @@ class AwsCredentials {
       var node = await http.read(url);
       print(node);
       url = Uri.parse('$url$node');
-      var credentials = await http.read(url);
-      return json.decode(response);
+      var response = await http.read(url);
+      var credentials = json.decode(response);
+      print(credentials.Expiration);
+      return credentials;
     } catch (e) {
       print(e);
       print('failed to get node credentials.');

@@ -54,7 +54,7 @@ class AwsCredentials {
     }
   }
 
-  Future<Map<String, String>?> getNodeCredentials() async {
+  Future<Map<String, dynamic>?> getNodeCredentials() async {
     try {
       var relativeUri = '/latest/meta-data/iam/security-credentials/';
       var url = Uri.parse('http://169.254.169.254$relativeUri');

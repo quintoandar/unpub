@@ -4,6 +4,7 @@ import 'package:args/args.dart';
 import 'package:path/path.dart' as path;
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:unpub/unpub.dart' as unpub;
+import 'package:unpub_aws/unpub_aws.dart' as unpub_aws;
 
 void main(List<String> args) async {
   var parser = ArgParser();
@@ -15,6 +16,7 @@ void main(List<String> args) async {
     defaultsTo: 'mongodb://localhost:27017/dart_pub',
   );
   parser.addOption('uploader');
+  parser.addOption('bucket');
 
   var results = parser.parse(args);
 
@@ -22,6 +24,7 @@ void main(List<String> args) async {
   var port = int.parse(results['port'] as String);
   var dbUri = results['database'] as String;
   var uploader = results['uploader'] as String?;
+  var bucket = results['bucket'] as String;
 
   if (results.rest.isNotEmpty) {
     print('Got unexpected arguments: "${results.rest.join(' ')}".\n\nUsage:\n');
@@ -38,8 +41,8 @@ void main(List<String> args) async {
 
   var app = unpub.App(
     metaStore: mongoStore,
-    packageStore: unpub.FileStore(baseDir),
     overrideUploaderEmail: uploader ?? '',
+    packageStore: unpub_aws.S3Store(bucket)
   );
 
   var server = await app.serve(host, port);

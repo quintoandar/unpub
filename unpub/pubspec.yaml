@@ -25,7 +25,8 @@ dependencies:
   path: ^1.6.2
   collection: ^1.15.0
   shelf_cors_headers: ^0.1.2
-  unpub_aws: 0.1.0
+  unpub_aws:
+    path: ../unpub_aws
 dev_dependencies:
   test: ^1.6.1
   build_runner: ^2.1.1
